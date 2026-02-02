@@ -22,6 +22,8 @@ options:
   certfile: fullchain.pem
   challenge: http
   dns: {}
+  dns_server: "1.1.1.1"
+  http_proxy: ""
 ports:
   80/tcp: 80
 schema:
@@ -177,4 +179,6 @@ schema:
   test_cert: bool?
   eab_kid: str?
   eab_hmac_key: str?
+  dns_server: str?
+  http_proxy: str?
 startup: once

@@ -25,6 +25,22 @@ DRY_RUN=$(bashio::config 'dry_run')
 TEST_CERT=$(bashio::config 'test_cert')
 VERBOSE=$(bashio::config 'verbose')
 
+if bashio::config.has_value 'dns_server'; then
+    DNS_SERVER=$(bashio::config 'dns_server')
+    bashio::log.info "Setting custom DNS: ${DNS_SERVER}"
+    echo "nameserver ${DNS_SERVER}" > /etc/resolv.conf
+fi
+
+if bashio::config.has_value 'http_proxy'; then
+    PROXY=$(bashio::config 'http_proxy')
+    bashio::log.info "Setting Proxy: ${PROXY}"
+    export http_proxy="${PROXY}"
+    export https_proxy="${PROXY}"
+    export HTTP_PROXY="${PROXY}"
+    export HTTPS_PROXY="${PROXY}"
+fi
+
+
 if [ "${CHALLENGE}" == "dns" ]; then
     bashio::log.info "Selected DNS Provider: ${DNS_PROVIDER}"
 
