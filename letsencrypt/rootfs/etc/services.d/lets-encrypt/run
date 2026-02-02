@@ -25,6 +25,23 @@ DRY_RUN=$(bashio::config 'dry_run')
 TEST_CERT=$(bashio::config 'test_cert')
 VERBOSE=$(bashio::config 'verbose')
 
+if bashio::config.has_value 'http_proxy'; then
+    export http_proxy=$(bashio::config 'http_proxy')
+    export https_proxy=$(bashio::config 'http_proxy')
+    export HTTP_PROXY=$(bashio::config 'http_proxy')
+    export HTTPS_PROXY=$(bashio::config 'http_proxy')
+    
+    bashio::log.info "Setting Proxy: ${http_proxy}"
+
+    # Прямая проверка связи через прокси
+    bashio::log.info "Checking connectivity to Let's Encrypt API..."
+    if curl -I -s --connect-timeout 5 https://acme-v02.api.letsencrypt.org/directory > /dev/null; then
+        bashio::log.info "Proxy connection: OK"
+    else
+        bashio::log.error "Proxy connection: FAILED (Check your proxy address/port)"
+    fi
+fi
+
 if [ "${CHALLENGE}" == "dns" ]; then
     bashio::log.info "Selected DNS Provider: ${DNS_PROVIDER}"
 
